@@ -1,8 +1,8 @@
 #include "JsonParser.h"
 // Privates
 using namespace std;
-template<typename T>
-void JsonParser::readArrayObjects(int n , int* i, char* data, Element<T>* p)
+
+void JsonParser::readArrayObjects(int n , int* i, char* data, Element* p)
 {
 	++* i; // one step next after ' [ '
 	// INIT Element T value p.setValue(); vector<variants> v;
@@ -19,8 +19,8 @@ void JsonParser::readArrayObjects(int n , int* i, char* data, Element<T>* p)
 		++*i;
 	}
 }
-template<typename T>
-void JsonParser::readArrayValues(int n, int* j, char* data, Element<T>* p)
+
+void JsonParser::readArrayValues(int n, int* j, char* data, Element* p)
 {
 
 }
@@ -61,10 +61,7 @@ int JsonParser::getNumber(int n, int* i, char* data)
 	delete[] c;
 	return res;
 }
-template<typename T>void JsonParser::checkArray(int n,int* j, char* data, Element<T>* p)
-{
- 
-}
+
 bool JsonParser::isSomthing(int* i, char* data)
 {
 	if (data[*i] != '"' && data[*i] != '1' && data[*i] != '{' && data[*i] != '[' && data[*i] != ']')// regEx
@@ -80,17 +77,17 @@ bool JsonParser::isSomthing(int* i, char* data)
 /// </summary>
 /// <param name="size"></param>
 /// <param name="data"></param>
-void JsonParser::parse(int size, char* data)
+ void JsonParser::parse(int size, char* data)
 {
 	// size of array - bytes of 
 	//size of file in bytes to array size set it before the method call
-	readObject<char>(size, 0, data, nullptr);
+	//readObject<T>(size, 0, data, nullptr);
 
 }
 
 // ?
 // Remake it return Element<T> 
-template<typename T> int JsonParser::readObject(int n, int* index, char* data, Element<T>* parant)
+Element* JsonParser::readObject(int n, int* index, char* data, Element* parant)
 {	// n - size of file in bytes to array size
 	for (int i = *index; i < n && data[i] != '}'; i++) { // loop1
 		if (data[i] == ' ') continue;
@@ -104,7 +101,7 @@ template<typename T> int JsonParser::readObject(int n, int* index, char* data, E
 				if (data[j] == '"') {
 					// 1. figure out is it an object or value 
 
-					std::string objectName = readString(n, data, &j);
+					std::string key = readString(n, data, &j);
 					//new Element(objectName); and value (T data) NULL
 
 					while (!isSomthing(&j, data)) {
@@ -112,16 +109,28 @@ template<typename T> int JsonParser::readObject(int n, int* index, char* data, E
 						j++;
 					}
 					if (data[j] == '{') {
-						Element<Element>* element = new Element<Element>(objectName);
+					/*	Element<Element<string>>* element = new Element<Element<string>>(key);
 						element->setParent(parant);
-						readObject(n, &j, data, element);					
+						readObject(n, &j, data, element);	
+						return element; */
 					}// readObject(); "name": {} new Element<Element>();
-					if (data[j] == '"' || data[j] == '1'); // value "name": 1
-					// set value 
+					
+					
+					if (data[j] == '"' || data[j] == '1') {
+						 
+						if (data[j] == '"') {
+						/* 	Element<string>* element = new Element<string>(key);
+							element->setParent(parant);
+							std::string value = readString(n, data, &j);
+
+ 						    element->setValue(&value);
+							*/
+						}
+					}
 
 					if (data[j] == '[') {
-						checkArray(n, &j, data, parant); 
-						//new Element<vector<>>();
+						
+						//new Element<vector<variant<int, string, Element>>>();
 					} // if "name": [] array of values? [{}] -?
 				}
 
@@ -130,7 +139,7 @@ template<typename T> int JsonParser::readObject(int n, int* index, char* data, E
 				
 				//std::cout << data[i];
 			}
-		return 0;
+		return nullptr;
 	}
 }
 JsonParser::JsonParser()

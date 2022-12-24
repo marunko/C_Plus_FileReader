@@ -1,34 +1,45 @@
 #include "Element.h"
- 
-template <typename T> Element<T>::Element(std::string str) {
+
+class Value{};
+class ValueInt : public Value {
+	int i;
+public:
+	int& getInt() {
+		return this->i;
+	}
+	void setInt(int &i) {
+		this->i = i;
+	}
+};
+class ValueString : public Value {
+	std::string str;
+public:
+	std::string& getStr() {
+		return this->str;
+	}
+	void setStr(std::string& str) {
+		this->str = str;
+	}
+};
+class ValueElement : public Value{
+	Element* element;
+public:
+	Element* getStr() {
+		return this->element;
+	}
+	void setStr(Element* element) {
+		this->element = element;
+	}
+	~ValueElement()
+	{
+		delete element;
+	}
+};
+
+Element::Element(std::string str) {
 	this->key = str;
 }
-template <typename T> Element<T>::Element(T* value) {
-	this->value = value;
-}
  
-template<typename T>
-void Element<T>::setValue(T* value)
-{
-
+Element::~Element() {
+	delete val;
 }
-template<typename T>
-void Element<T>::setKey(std::string str)
-{
-
-}
-
-template<typename T>
-void Element<T>::setParent(Element* parant)
-{
-	this->parant = parant;
-}
- 
-
-template<typename T>
-Element<T>::~Element()
-{
-	delete this->value;
-}
-
- 
